@@ -10,6 +10,9 @@
         <variable
             name="viewModel"
             type="com.pgssoft.forgetAdaptersDemo.viewmodels.MainActivityViewModel" />
+        <variable
+            name="viewProvider"
+            type="com.pgssoft.forgetadapters.dataBinding.RecyclerViewProvider" />
     </data>
 
     <LinearLayout
@@ -23,5 +26,13 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/m_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:items="@{viewModel.people}"
+            app:viewProvider="@{viewProvider}"/>
+
     </LinearLayout>
 </layout>
