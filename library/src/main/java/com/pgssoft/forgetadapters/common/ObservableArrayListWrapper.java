@@ -12,41 +12,50 @@ import java.util.ArrayList;
 public class ObservableArrayListWrapper<T> implements IObservableCollection<T> {
 
     private final ObservableArrayList<T> items;
-    private final ArrayList<CollectionChangeListener> collectionChangeListeners = new ArrayList<>();
+    private final ArrayList<IObservableCollection.CollectionChangeListener> collectionChangeListeners = new ArrayList<>();
 
     private final ObservableList.OnListChangedCallback listChangedCallback = new ObservableList.OnListChangedCallback() {
+
         @Override
         public void onChanged(ObservableList observableList) {
-            notifyCollectionChanged();
+
+            for (IObservableCollection.CollectionChangeListener listener : collectionChangeListeners) {
+                listener.onChanged(ObservableArrayListWrapper.this);
+            }
         }
 
         @Override
-        public void onItemRangeChanged(ObservableList observableList, int i, int i1) {
-            notifyCollectionChanged();
+        public void onItemRangeChanged(ObservableList observableList, int positionStart, int itemCount) {
+
+            for (CollectionChangeListener listener : collectionChangeListeners) {
+                listener.onItemRangeChanged(ObservableArrayListWrapper.this, positionStart, itemCount);
+            }
         }
 
         @Override
-        public void onItemRangeInserted(ObservableList observableList, int i, int i1) {
-            notifyCollectionChanged();
+        public void onItemRangeInserted(ObservableList observableList, int positionStart, int itemCount) {
+
+            for (CollectionChangeListener listener : collectionChangeListeners) {
+                listener.onItemRangeInserted(ObservableArrayListWrapper.this, positionStart, itemCount);
+            }
         }
 
         @Override
-        public void onItemRangeMoved(ObservableList observableList, int i, int i1, int i2) {
-            notifyCollectionChanged();
+        public void onItemRangeMoved(ObservableList observableList, int fromPosition, int toPosition, int itemCount) {
+
+            for (CollectionChangeListener listener : collectionChangeListeners) {
+                listener.onChanged(ObservableArrayListWrapper.this);
+            }
         }
 
         @Override
-        public void onItemRangeRemoved(ObservableList observableList, int i, int i1) {
-            notifyCollectionChanged();
+        public void onItemRangeRemoved(ObservableList observableList, int positionStart, int itemCount) {
+
+            for (CollectionChangeListener listener : collectionChangeListeners) {
+                listener.onItemRangeRemoved(ObservableArrayListWrapper.this, positionStart, itemCount);
+            }
         }
     };
-
-    private void notifyCollectionChanged() {
-
-        for (CollectionChangeListener listener : collectionChangeListeners) {
-            listener.collectionChanged();
-        }
-    }
 
     public ObservableArrayListWrapper(ObservableArrayList<T> items) {
 
@@ -55,13 +64,13 @@ public class ObservableArrayListWrapper<T> implements IObservableCollection<T> {
     }
 
     @Override
-    public int count() {
+    public int size() {
 
         return items.size();
     }
 
     @Override
-    public T getItem(int index) {
+    public T get(int index) {
 
         return items.get(index);
     }
@@ -76,5 +85,9 @@ public class ObservableArrayListWrapper<T> implements IObservableCollection<T> {
     public void removeCollectionChangedListener(CollectionChangeListener listener) {
 
         collectionChangeListeners.remove(listener);
+    }
+
+    public ObservableArrayList<T> getItems() {
+        return items;
     }
 }

@@ -1,9 +1,11 @@
 package com.pgssoft.forgetadapters.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.pgssoft.forgetadapters.common.IIdProvider;
 import com.pgssoft.forgetadapters.common.IObservableCollection;
 import com.pgssoft.forgetadapters.dataBinding.RecyclerViewProvider;
 import com.pgssoft.forgetadapters.viewmodels.base.IDataViewModel;
@@ -36,7 +38,25 @@ public class RecyclerViewAdapter<TModel, TView extends View & IDataViewModelProv
 
     private final IObservableCollection.CollectionChangeListener collectionChangeListener = new IObservableCollection.CollectionChangeListener() {
         @Override
-        public void collectionChanged() {
+        public void onItemRangeChanged(IObservableCollection sender, int start, int count) {
+
+            RecyclerViewAdapter.this.notifyItemRangeChanged(start, count);
+        }
+
+        @Override
+        public void onItemRangeInserted(IObservableCollection sender, int start, int count) {
+
+            RecyclerViewAdapter.this.notifyItemRangeInserted(start, count);
+        }
+
+        @Override
+        public void onItemRangeRemoved(IObservableCollection sender, int start, int count) {
+
+            RecyclerViewAdapter.this.notifyItemRangeRemoved(start, count);
+        }
+
+        @Override
+        public void onChanged(IObservableCollection sender) {
 
             RecyclerViewAdapter.this.notifyDataSetChanged();
         }
@@ -55,6 +75,7 @@ public class RecyclerViewAdapter<TModel, TView extends View & IDataViewModelProv
         this.viewProvider = viewProvider;
 
         observableCollection.addCollectionChangedListener(collectionChangeListener);
+        setHasStableIds(viewProvider.hasStableIds());
     }
 
     @Override
@@ -67,13 +88,30 @@ public class RecyclerViewAdapter<TModel, TView extends View & IDataViewModelProv
     @Override
     public void onBindViewHolder(ViewHolder<TView> holder, int position) {
 
-        TModel data = observableCollection.getItem(position);
+        TModel data = observableCollection.get(position);
         holder.getViewModel().setData(data);
     }
 
     @Override
     public int getItemCount() {
 
-        return observableCollection.count();
+        return observableCollection.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+
+        if (observableCollection.get(position) instanceof IIdProvider)
+            return ((IIdProvider)observableCollection.get(position)).getId();
+        else {
+            if (viewProvider.hasStableIds())
+                throw new RuntimeException("If supplied ViewProvider claims, that data has stable IDs, model class must implement IIdProvider interface.");
+        }
+
+        return 0;
+    }
+
+    public IObservableCollection getItems() {
+        return observableCollection;
     }
 }

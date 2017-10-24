@@ -8,11 +8,14 @@ public interface IObservableCollection<T> {
 
     interface CollectionChangeListener {
 
-        void collectionChanged();
+        void onItemRangeChanged(IObservableCollection sender, int start, int count);
+        void onItemRangeInserted(IObservableCollection sender, int start, int count);
+        void onItemRangeRemoved(IObservableCollection sender, int start, int count);
+        void onChanged(IObservableCollection sender);
     }
 
-    int count();
-    T getItem(int index);
+    int size();
+    T get(int index);
     void addCollectionChangedListener(CollectionChangeListener listener);
     void removeCollectionChangedListener(CollectionChangeListener listener);
 }

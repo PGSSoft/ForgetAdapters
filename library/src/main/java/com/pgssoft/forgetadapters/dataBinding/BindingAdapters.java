@@ -22,6 +22,12 @@ public class BindingAdapters {
     @BindingAdapter(value = {"items", "viewProvider"}, requireAll = true)
     public static <TModel, TView extends View & IDataViewModelProvider<TModel>> void setItems(RecyclerView recyclerView, ObservableArrayList<TModel> items, RecyclerViewProvider<TModel, TView> viewProvider) {
 
+        if (recyclerView.getAdapter() != null &&
+                recyclerView.getAdapter() instanceof RecyclerViewAdapter &&
+                ((RecyclerViewAdapter)recyclerView.getAdapter()).getItems() instanceof ObservableArrayListWrapper &&
+                ((ObservableArrayListWrapper)((RecyclerViewAdapter)recyclerView.getAdapter()).getItems()).getItems() == items)
+            return;
+
         ObservableArrayListWrapper<TModel> wrapper = new ObservableArrayListWrapper<>(items);
         RecyclerViewAdapter<TModel, TView> adapter = new RecyclerViewAdapter<TModel, TView>(wrapper, viewProvider);
         recyclerView.setAdapter(adapter);
@@ -37,8 +43,22 @@ public class BindingAdapters {
     @BindingAdapter(value = {"items", "viewProvider"}, requireAll = true)
     public static <TModel extends IIdProvider, TView extends View & IDataViewModelProvider<TModel>> void setItems(ListView listView, ObservableArrayList<TModel> items, ListViewProvider<TModel, TView> viewProvider) {
 
+        if (listView.getAdapter() != null &&
+                listView.getAdapter() instanceof ListViewAdapter &&
+                ((ListViewAdapter)listView.getAdapter()).getItems() instanceof ObservableArrayListWrapper &&
+                ((ObservableArrayListWrapper)((ListViewAdapter)listView.getAdapter()).getItems()).getItems() == items)
+            return;
+
         ObservableArrayListWrapper<TModel> wrapper = new ObservableArrayListWrapper<>(items);
         ListViewAdapter<TModel, TView> adapter = new ListViewAdapter<TModel, TView>(wrapper, viewProvider, false);
         listView.setAdapter(adapter);
     }
+
+    @BindingAdapter(value = {"items", "viewProvider"}, requireAll = true)
+    public static <TModel extends IIdProvider, TView extends View & IDataViewModelProvider<TModel>> void setItems(ListView listView, IObservableCollection<TModel> items, ListViewProvider<TModel, TView> viewProvider) {
+
+        ListViewAdapter<TModel, TView> adapter = new ListViewAdapter<TModel, TView>(items, viewProvider, false);
+        listView.setAdapter(adapter);
+    }
+
 }

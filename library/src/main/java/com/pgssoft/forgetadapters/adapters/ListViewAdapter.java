@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 
 import com.pgssoft.forgetadapters.common.IIdProvider;
 import com.pgssoft.forgetadapters.common.IObservableCollection;
+import com.pgssoft.forgetadapters.common.ObservableCollection;
 import com.pgssoft.forgetadapters.dataBinding.ListViewProvider;
 import com.pgssoft.forgetadapters.views.interfaces.IDataViewModelProvider;
 
@@ -24,8 +25,28 @@ public class ListViewAdapter<TModel extends IIdProvider, TView extends View & ID
     private final boolean stableIds;
 
     private final IObservableCollection.CollectionChangeListener collectionChangeListener = new IObservableCollection.CollectionChangeListener() {
+
         @Override
-        public void collectionChanged() {
+        public void onItemRangeChanged(IObservableCollection sender, int start, int count) {
+
+            ListViewAdapter.this.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onItemRangeInserted(IObservableCollection sender, int start, int count) {
+
+            ListViewAdapter.this.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onItemRangeRemoved(IObservableCollection sender, int start, int count) {
+
+            ListViewAdapter.this.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChanged(IObservableCollection sender) {
+
             ListViewAdapter.this.notifyDataSetChanged();
         }
     };
@@ -41,19 +62,19 @@ public class ListViewAdapter<TModel extends IIdProvider, TView extends View & ID
     @Override
     public int getCount() {
 
-        return collection.count();
+        return collection.size();
     }
 
     @Override
     public Object getItem(int i) {
 
-        return collection.getItem(i);
+        return collection.get(i);
     }
 
     @Override
     public long getItemId(int i) {
 
-        return collection.getItem(i).getId();
+        return collection.get(i).getId();
     }
 
     @Override
@@ -63,7 +84,7 @@ public class ListViewAdapter<TModel extends IIdProvider, TView extends View & ID
             view = provider.createView();
         }
 
-        ((TView)view).getViewModel().setData(collection.getItem(i));
+        ((TView)view).getViewModel().setData(collection.get(i));
 
         return view;
     }
@@ -71,5 +92,10 @@ public class ListViewAdapter<TModel extends IIdProvider, TView extends View & ID
     @Override
     public boolean hasStableIds() {
         return stableIds;
+    }
+
+    public IObservableCollection getItems() {
+
+        return collection;
     }
 }

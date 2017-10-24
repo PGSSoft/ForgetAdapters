@@ -15,4 +15,8 @@ public abstract class RecyclerViewProvider<TModel, TView extends View & IDataVie
     public int getTypeFor(TModel data) {
         return 0;
     }
+
+    public boolean hasStableIds() {
+        return false;
+    }
 }
