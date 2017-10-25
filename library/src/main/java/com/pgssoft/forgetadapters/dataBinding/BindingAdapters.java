@@ -6,11 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ListView;
 
-import com.pgssoft.forgetadapters.adapters.ListViewAdapter;
-import com.pgssoft.forgetadapters.adapters.RecyclerViewAdapter;
+import com.pgssoft.forgetadapters.adapters.ListViewCollectionAdapter;
+import com.pgssoft.forgetadapters.adapters.ListViewListAdapter;
+import com.pgssoft.forgetadapters.adapters.RecyclerViewCollectionAdapter;
+import com.pgssoft.forgetadapters.adapters.RecyclerViewListAdapter;
 import com.pgssoft.forgetadapters.common.IIdProvider;
 import com.pgssoft.forgetadapters.common.IObservableCollection;
-import com.pgssoft.forgetadapters.common.ObservableArrayListWrapper;
 import com.pgssoft.forgetadapters.views.interfaces.IDataViewModelProvider;
 
 /**
@@ -23,20 +24,18 @@ public class BindingAdapters {
     public static <TModel, TView extends View & IDataViewModelProvider<TModel>> void setItems(RecyclerView recyclerView, ObservableArrayList<TModel> items, RecyclerViewProvider<TModel, TView> viewProvider) {
 
         if (recyclerView.getAdapter() != null &&
-                recyclerView.getAdapter() instanceof RecyclerViewAdapter &&
-                ((RecyclerViewAdapter)recyclerView.getAdapter()).getItems() instanceof ObservableArrayListWrapper &&
-                ((ObservableArrayListWrapper)((RecyclerViewAdapter)recyclerView.getAdapter()).getItems()).getItems() == items)
+                recyclerView.getAdapter() instanceof RecyclerViewListAdapter &&
+                ((RecyclerViewListAdapter)recyclerView.getAdapter()).getList() == items)
             return;
 
-        ObservableArrayListWrapper<TModel> wrapper = new ObservableArrayListWrapper<>(items);
-        RecyclerViewAdapter<TModel, TView> adapter = new RecyclerViewAdapter<TModel, TView>(wrapper, viewProvider);
+        RecyclerViewListAdapter<TModel, TView> adapter = new RecyclerViewListAdapter<>(items, viewProvider);
         recyclerView.setAdapter(adapter);
     }
 
     @BindingAdapter(value = {"items", "viewProvider"}, requireAll = true)
     public static <TModel, TView extends View & IDataViewModelProvider<TModel>> void setItems(RecyclerView recyclerView, IObservableCollection<TModel> items, RecyclerViewProvider<TModel, TView> viewProvider) {
 
-        RecyclerViewAdapter<TModel, TView> adapter = new RecyclerViewAdapter<TModel, TView>(items, viewProvider);
+        RecyclerViewCollectionAdapter<TModel, TView> adapter = new RecyclerViewCollectionAdapter<TModel, TView>(items, viewProvider);
         recyclerView.setAdapter(adapter);
     }
 
@@ -44,20 +43,18 @@ public class BindingAdapters {
     public static <TModel extends IIdProvider, TView extends View & IDataViewModelProvider<TModel>> void setItems(ListView listView, ObservableArrayList<TModel> items, ListViewProvider<TModel, TView> viewProvider) {
 
         if (listView.getAdapter() != null &&
-                listView.getAdapter() instanceof ListViewAdapter &&
-                ((ListViewAdapter)listView.getAdapter()).getItems() instanceof ObservableArrayListWrapper &&
-                ((ObservableArrayListWrapper)((ListViewAdapter)listView.getAdapter()).getItems()).getItems() == items)
+                listView.getAdapter() instanceof ListViewCollectionAdapter &&
+                ((ListViewCollectionAdapter)listView.getAdapter()).getItems() == items)
             return;
 
-        ObservableArrayListWrapper<TModel> wrapper = new ObservableArrayListWrapper<>(items);
-        ListViewAdapter<TModel, TView> adapter = new ListViewAdapter<TModel, TView>(wrapper, viewProvider, false);
+        ListViewListAdapter<TModel, TView> adapter = new ListViewListAdapter<TModel, TView>(items, viewProvider, false);
         listView.setAdapter(adapter);
     }
 
     @BindingAdapter(value = {"items", "viewProvider"}, requireAll = true)
     public static <TModel extends IIdProvider, TView extends View & IDataViewModelProvider<TModel>> void setItems(ListView listView, IObservableCollection<TModel> items, ListViewProvider<TModel, TView> viewProvider) {
 
-        ListViewAdapter<TModel, TView> adapter = new ListViewAdapter<TModel, TView>(items, viewProvider, false);
+        ListViewCollectionAdapter<TModel, TView> adapter = new ListViewCollectionAdapter<TModel, TView>(items, viewProvider, false);
         listView.setAdapter(adapter);
     }
 

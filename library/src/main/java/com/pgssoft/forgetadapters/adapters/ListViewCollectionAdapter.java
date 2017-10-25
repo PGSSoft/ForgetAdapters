@@ -10,7 +10,6 @@ import android.widget.BaseAdapter;
 
 import com.pgssoft.forgetadapters.common.IIdProvider;
 import com.pgssoft.forgetadapters.common.IObservableCollection;
-import com.pgssoft.forgetadapters.common.ObservableCollection;
 import com.pgssoft.forgetadapters.dataBinding.ListViewProvider;
 import com.pgssoft.forgetadapters.views.interfaces.IDataViewModelProvider;
 
@@ -18,7 +17,7 @@ import com.pgssoft.forgetadapters.views.interfaces.IDataViewModelProvider;
  * Created by wsura on 13.10.2017.
  */
 
-public class ListViewAdapter<TModel extends IIdProvider, TView extends View & IDataViewModelProvider<TModel>> extends BaseAdapter {
+public class ListViewCollectionAdapter<TModel extends IIdProvider, TView extends View & IDataViewModelProvider<TModel>> extends BaseAdapter {
 
     private final IObservableCollection<TModel> collection;
     private final ListViewProvider<TModel, TView> provider;
@@ -29,29 +28,29 @@ public class ListViewAdapter<TModel extends IIdProvider, TView extends View & ID
         @Override
         public void onItemRangeChanged(IObservableCollection sender, int start, int count) {
 
-            ListViewAdapter.this.notifyDataSetChanged();
+            ListViewCollectionAdapter.this.notifyDataSetChanged();
         }
 
         @Override
         public void onItemRangeInserted(IObservableCollection sender, int start, int count) {
 
-            ListViewAdapter.this.notifyDataSetChanged();
+            ListViewCollectionAdapter.this.notifyDataSetChanged();
         }
 
         @Override
         public void onItemRangeRemoved(IObservableCollection sender, int start, int count) {
 
-            ListViewAdapter.this.notifyDataSetChanged();
+            ListViewCollectionAdapter.this.notifyDataSetChanged();
         }
 
         @Override
         public void onChanged(IObservableCollection sender) {
 
-            ListViewAdapter.this.notifyDataSetChanged();
+            ListViewCollectionAdapter.this.notifyDataSetChanged();
         }
     };
 
-    public ListViewAdapter(IObservableCollection<TModel> collection, ListViewProvider<TModel, TView> provider, boolean stableIds) {
+    public ListViewCollectionAdapter(IObservableCollection<TModel> collection, ListViewProvider<TModel, TView> provider, boolean stableIds) {
         this.collection = collection;
         this.provider = provider;
         this.stableIds = stableIds;
