@@ -64,7 +64,7 @@ public class RecyclerViewCollectionAdapter<TModel, TView extends View & IDataVie
     // Private fields ---------------------------------------------------------
 
     private final IObservableCollection<TModel> observableCollection;
-    private RecyclerViewProvider<TModel, TView> viewProvider;
+    private final RecyclerViewProvider<TModel, TView> viewProvider;
 
     // Public methods ---------------------------------------------------------
 
@@ -108,6 +108,12 @@ public class RecyclerViewCollectionAdapter<TModel, TView extends View & IDataVie
         }
 
         return 0;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return viewProvider.getTypeFor(observableCollection.get(position));
     }
 
     public IObservableCollection getItems() {

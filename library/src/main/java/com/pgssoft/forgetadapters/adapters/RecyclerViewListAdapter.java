@@ -117,6 +117,12 @@ public class RecyclerViewListAdapter<TModel, TView extends View & IDataViewModel
         return 0;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+
+        return viewProvider.getTypeFor(observableList.get(position));
+    }
+
     public ObservableArrayList<TModel> getList() {
         return observableList;
     }
